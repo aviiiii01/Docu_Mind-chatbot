@@ -10,7 +10,7 @@ DocuMind DocuMind is an AI-powered chatbot that transforms your PDFs into a conv
 # Installation & Setup
 
 1. Clone the Repository:
-     git clone https://github.com/yourusername/docu_mind-chatbot.git
+    https://github.com/aviiiii01/Docu_Mind-chatbot.git
 2. Navigate to the Project Directory:
     cd docu_mind-chatbot
 3. Create a Virtual Environment (Optional but Recommended):
