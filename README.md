@@ -21,7 +21,8 @@ DocuMind DocuMind is an AI-powered chatbot that transforms your PDFs into a conv
     pip install -r requirements.txt
 5. Run the Chatbot:
     streamlit run main.py
-
+# Note
+make sure to add gemini api in place of "GEMINI_API_KEY" .
 # Troubleshooting
 
 1:-ModuleNotFoundError: No module named 'langchain'
