@@ -16,6 +16,29 @@ if "memory" not in st.session_state:
     )
 if "vectorstore" not in st.session_state:
     st.session_state.vectorstore = None
+   
+@st.cache_data 
+def ext_text(pdfs_uploaded):
+    data = ''
+    for pdf in pdfs_uploaded:
+        pdf_reader = PdfReader(pdf)
+        for page in pdf_reader.pages:
+            extracted_text = page.extract_text()
+            data += extracted_text
+    return data
+@st.cache_data 
+def create_vectorstore():
+    text_splitted = CharacterTextSplitter(
+        separator="\n",
+        chunk_size=500,
+        chunk_overlap=50,
+        length_function=len,
+    )
+    chunks = text_splitted.split_text(data)
+    # Create embeddings and store in FAISS
+    embeddings = HuggingFaceBgeEmbeddings(model_name="all-MiniLM-L6-v2")
+    st.session_state.vectorstore = FAISS.from_texts(texts=chunks, embedding=embeddings)
+    st.success("✅ Documents processed successfully!")
 
 load_dotenv() 
 
@@ -32,32 +55,13 @@ with st.sidebar:
     
     if btn and pdfs_uploaded and st.session_state.vectorstore is None:
         with st.spinner("Processing..."):  # Spinner starts before processing
-            data = ''
-            for pdf in pdfs_uploaded:
-                pdf_reader = PdfReader(pdf)
-                for page in pdf_reader.pages:
-                    extracted_text = page.extract_text()
-                    data += extracted_text
-            
+            data=ext_text(pdfs_uploaded)
             # Ensure extracted text exists
             if not data:
                 st.error("No text extracted from the PDFs. Please check the files.")
                 st.stop()
-
             # Split text into chunks
-            text_splitted = CharacterTextSplitter(
-                separator="\n",
-                chunk_size=500,
-                chunk_overlap=50,
-                length_function=len,
-            )
-            chunks = text_splitted.split_text(data)
-
-            # Create embeddings and store in FAISS
-            embeddings = HuggingFaceBgeEmbeddings(model_name="all-MiniLM-L6-v2")
-            st.session_state.vectorstore = FAISS.from_texts(texts=chunks, embedding=embeddings)
-
-            st.success("✅ Documents processed successfully!")
+            create_vectorstore()
             
 if(query and pdfs_uploaded):
     result=''
