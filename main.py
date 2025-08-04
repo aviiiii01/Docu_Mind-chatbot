@@ -27,7 +27,7 @@ def ext_text(pdfs_uploaded):
             data += extracted_text
     return data
 @st.cache_data 
-def create_vectorstore():
+def create_vectorstore(data):
     text_splitted = CharacterTextSplitter(
         separator="\n",
         chunk_size=500,
@@ -46,6 +46,7 @@ st.set_page_config("Botty mera bhai!")
 st.header("Chat with Multiple PDFs:books:")
 query=st.text_input("Ask your question about the docs!....")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") 
+print(GEMINI_API_KEY)
 db=None
 with st.sidebar:
     st.subheader("Browse your document here Bro!..")
@@ -61,12 +62,12 @@ with st.sidebar:
                 st.error("No text extracted from the PDFs. Please check the files.")
                 st.stop()
             # Split text into chunks
-            create_vectorstore()
+            create_vectorstore(data)
             
-if(query and pdfs_uploaded):
+if query and pdfs_uploaded and st.session_state.vectorstore is not None:
     result=''
     with st.spinner("Processing"):
-        llm=ChatGoogleGenerativeAI(model="gemini-2.0-pro-exp-02-05",api_key=GEMINI_API_KEY,temperature=0.7)
+        llm=ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite",api_key=GEMINI_API_KEY,temperature=0.7)
         qa_chain = ConversationalRetrievalChain.from_llm(
             llm=llm,
             retriever=st.session_state.vectorstore.as_retriever(),#Converts the vector store into a retriever -> A Retriever is a standardized interface for fetching documents, which can later be used with LangChain's retrieval-based chains.
@@ -76,7 +77,7 @@ if(query and pdfs_uploaded):
     with st.spinner("Thinking..."):
         response = qa_chain({"question": query})
         answer = response["answer"]
-        
+        st.success("✅ Thinked!")
     if(st.session_state.memory==None):
         with st.container():
             st.markdown(
