@@ -60,3 +60,4 @@ zstandard==0.23.0
 sentence-transformers
 transformers
 langchain-community
+langchain_google_genai
