@@ -19,10 +19,10 @@ jsonpatch==1.33
 jsonpointer==3.0.0
 jsonschema==4.23.0
 jsonschema-specifications==2024.10.1
-langchain==0.3.21
-langchain-core==0.3.48
-langchain-text-splitters==0.3.7
-langsmith==0.3.18
+langchain
+langchain-core
+langchain-text-splitters
+langsmith
 MarkupSafe==3.0.2
 narwhals==1.32.0
 numpy==2.2.4
@@ -61,3 +61,6 @@ sentence-transformers
 transformers
 langchain-community
 langchain_google_genai
+fastapi
+uvicorn[standard]
+python-multipart
